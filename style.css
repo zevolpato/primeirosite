@@ -1,0 +1,25 @@
+p {
+    color: rgb(6, 200, 110);
+}
+
+
+
+li{
+    color:green;
+    list-style: lower-roman;
+}
+
+h1{
+    color:blue
+}
+
+
+.varios_p {
+    color : green
+}
+
+
+.album_fotos{
+
+    color :red
+}
