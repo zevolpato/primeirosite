@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Master | Aprenda Programando</title>
+    <style>
+        /* CSS3 - DESIGN MODERNO DARK MODE */
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --primary: #8b5cf6; /* Roxo */
+            --secondary: #06b6d4; /* Cyan Neon */
+            --success: #10b981; /* Verde */
+            --error: #ef4444; /* Vermelho */
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* PROGRESS BAR */
+        .progress-container {
+            margin-bottom: 2rem;
+            display: none;
+        }
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--secondary);
+        }
+        .progress-bar-bg {
+            background: #334155;
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        /* TELAS */
+        .screen { display: none; animation: fadeIn 0.5s ease; }
+        .screen.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* FORMULÁRIO INICIAL */
+        h1 { color: var(--secondary); margin-bottom: 1rem; text-align: center; }
+        .input-group { margin-top: 1.5rem; text-align: center; }
+        input[type="text"] {
+            padding: 0.8rem;
+            border-radius: 0.5rem;
+            border: none;
+            width: 70%;
+            background: #334155;
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        button {
+            padding: 0.8rem 2rem;
+            border-radius: 0.5rem;
+            border: none;
+            background: var(--primary);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+        }
+        button:hover { transform: scale(1.05); background: #7c3aed; }
+
+        /* CONTEÚDO PEDAGÓGICO */
+        .theory-box {
+            background: rgba(139, 92, 246, 0.1);
+            padding: 1rem;
+            border-left: 4px solid var(--primary);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .code-editor {
+            background: #000;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            font-family: 'Courier New', Courier, monospace;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .code-input {
+            background: #334155;
+            border: 1px solid var(--primary);
+            color: var(--secondary);
+            font-family: inherit;
+            font-size: 1rem;
+            width: 120px;
+            padding: 2px 5px;
+            border-radius: 3px;
+            outline: none;
+        }
+        .code-input.correct { border-color: var(--success); background: rgba(16, 185, 129, 0.2); }
+        .code-input.wrong { border-color: var(--error); background: rgba(239, 68, 68, 0.2); }
+
+        .hint { color: var(--error); font-size: 0.9rem; margin-top: 0.5rem; display: none; }
+
+        /* TROFÉU FINAL */
+        .trophy-container { text-align: center; }
+        .trophy-icon { font-size: 5rem; margin-bottom: 1rem; display: block; animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .medals-display {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+        .medal { font-size: 1.5rem; opacity: 0.3; transition: opacity 0.5s; }
+        .medal.earned { opacity: 1; }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Barra de Progresso -->
+        <div id="progressZone" class="progress-container">
+            <div class="progress-info">
+                <span id="moduleNameDisplay">Módulo</span>
+                <span id="progressText">0/6</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div id="progressBar" class="progress-bar-fill"></div>
+            </div>
+            <div class="medals-display" id="medalsRow">
+                <span class="medal">🏅</span>
+                <span class="medal">🏅</span>
+                <span class="medal">🏅</span>
+                <span class="medal">🏅</span>
+                <span class="medal">🏅</span>
+                <span class="medal">🏅</span>
+            </div>
+        </div>
+
+        <!-- Tela 1: Cadastro -->
+        <section id="screen-intro" class="screen active">
+            <h1>🐍 Python Master</h1>
+            <p style="text-align: center; color: var(--text-muted);">Inicie sua jornada para se tornar um mestre na linguagem mais popular do mundo.</p>
+            <div class="input-group">
+                <input type="text" id="userName" placeholder="Digite seu nome..." autocomplete="off">
+                <br>
+                <button onclick="startGame()">Começar Jornada</button>
+            </div>
+        </section>
+
+        <!-- Tela 2: Desafios -->
+        <section id="screen-game" class="screen">
+            <h2 id="module-title">Título do Módulo</h2>
+            <div class="theory-box" id="module-theory">
+                Explicação teórica aqui.
+            </div>
+            <div class="code-editor" id="code-area">
+                <!-- O código será injetado aqui -->
+            </div>
+            <p id="feedback-hint" class="hint">Dica: Verifique a sintaxe!</p>
+            <button id="btn-check" onclick="validateStep()">Verificar Resposta</button>
+        </section>
+
+        <!-- Tela 3: Final -->
+        <section id="screen-finish" class="screen">
+            <div class="trophy-container">
+                <span class="trophy-icon">🏆</span>
+                <h1 id="victory-msg">Parabéns, Mestre!</h1>
+                <p id="congrats-text" style="margin-bottom: 2rem;"></p>
+                <button onclick="restartGame()">Reiniciar Jogo</button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        /** 
+         * LÓGICA DO APLICATIVO
+         * Desenvolvedor: Senior Full Stack
+         * Metodologia: Gamificação e Feedback Imediato
+         */
+
+        const modules = [
+            {
+                id: 1,
+                title: "Módulo 1: Variáveis e Tipos",
+                theory: "Em Python, criamos variáveis atribuindo um valor com o sinal de '='. Strings usam aspas e inteiros são números puros.",
+                codeHtml: 'nome = "Python"<br>versao = <input class="code-input" data-ans="3"> <br>print(nome)',
+                hint: "Dica: A versão atual mais comum do Python começa com o número 3."
+            },
+            {
+                id: 2,
+                title: "Módulo 2: Condicionais (if)",
+                theory: "O 'if' verifica uma condição. Se for verdadeira, executa o bloco indentado.",
+                codeHtml: 'idade = 18<br>if idade >= 18:<br>&nbsp;&nbsp;&nbsp;&nbsp;print("<input class="code-input" data-ans="Maior de idade">")',
+                hint: "Dica: Complete com a frase 'Maior de idade'."
+            },
+            {
+                id: 3,
+                title: "Módulo 3: Estruturas de Repetição",
+                theory: "O loop 'for' percorre sequências. A função range(5) gera números de 0 a 4.",
+                codeHtml: '<input class="code-input" data-ans="for"> i in range(5):<br>&nbsp;&nbsp;&nbsp;&nbsp;print(i)',
+                hint: "Dica: Qual palavra chave inicia o loop para percorrer um intervalo?"
+            },
+            {
+                id: 4,
+                title: "Módulo 4: Listas",
+                theory: "Listas armazenam vários itens. O método '.append()' adiciona um item ao final.",
+                codeHtml: 'frutas = ["Maçã"]<br>frutas.<input class="code-input" data-ans="append">("Banana")',
+                hint: "Dica: O método começa com 'a' e serve para anexar."
+            },
+            {
+                id: 5,
+                title: "Módulo 5: Funções",
+                theory: "Funções são blocos de código que executam uma tarefa quando chamados. Usamos 'def' para definir.",
+                codeHtml: '<input class="code-input" data-ans="def"> soma(a, b):<br>&nbsp;&nbsp;&nbsp;&nbsp;return a + b',
+                hint: "Dica: Qual é a palavra reservada para definir uma função?"
+            },
+            {
+                id: 6,
+                title: "Módulo 6: Orientação a Objetos",
+                theory: "Classes são modelos para objetos. O método __init__ é o construtor da classe.",
+                codeHtml: 'class Heroi:<br>&nbsp;&nbsp;&nbsp;&nbsp;def <input class="code-input" data-ans="__init__">(self, nome):<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.nome = nome',
+                hint: "Dica: O método de inicialização começa e termina com dois underlines."
+            }
+        ];
+
+        let currentModuleIndex = 0;
+        let userData = { name: "" };
+
+        // Iniciar Jogo
+        function startGame() {
+            const nameInput = document.getElementById('userName');
+            if (nameInput.value.trim() === "") {
+                alert("Por favor, digite seu nome!");
+                return;
+            }
+            userData.name = nameInput.value;
+            localStorage.setItem('pythonMasterName', userData.name);
+            
+            document.getElementById('screen-intro').classList.remove('active');
+            document.getElementById('screen-game').classList.add('active');
+            document.getElementById('progressZone').style.display = 'block';
+            
+            renderModule();
+        }
+
+        // Renderizar Módulo Atual
+        function renderModule() {
+            const module = modules[currentModuleIndex];
+            document.getElementById('module-title').innerText = module.title;
+            document.getElementById('module-theory').innerText = module.theory;
+            document.getElementById('code-area').innerHTML = module.codeHtml;
+            document.getElementById('feedback-hint').style.display = 'none';
+            
+            // Atualizar Progress Bar
+            const progressPercent = (currentModuleIndex / modules.length) * 100;
+            document.getElementById('progressBar').style.width = `${progressPercent}%`;
+            document.getElementById('progressText').innerText = `${currentModuleIndex}/${modules.length}`;
+            document.getElementById('moduleNameDisplay').innerText = `Módulo ${currentModuleIndex + 1}`;
+        }
+
+        // Validar Resposta
+        function validateStep() {
+            const inputs = document.querySelectorAll('.code-input');
+            let allCorrect = true;
+
+            inputs.forEach(input => {
+                if (input.value.trim().toLowerCase() === input.dataset.ans.toLowerCase()) {
+                    input.classList.remove('wrong');
+                    input.classList.add('correct');
+                } else {
+                    input.classList.add('wrong');
+                    allCorrect = false;
+                }
+            });
+
+            if (allCorrect) {
+                // Ganhou Medalha
+                const medals = document.querySelectorAll('.medal');
+                medals[currentModuleIndex].classList.add('earned');
+                
+                // Avançar após pequeno delay
+                setTimeout(() => {
+                    currentModuleIndex++;
+                    if (currentModuleIndex < modules.length) {
+                        renderModule();
+                    } else {
+                        showFinishScreen();
+                    }
+                }, 1000);
+            } else {
+                document.getElementById('feedback-hint').innerText = modules[currentModuleIndex].hint;
+                document.getElementById('feedback-hint').style.display = 'block';
+            }
+        }
+
+        // Tela Final
+        function showFinishScreen() {
+            document.getElementById('progressBar').style.width = `100%`;
+            document.getElementById('progressText').innerText = `6/6`;
+            
+            document.getElementById('screen-game').classList.remove('active');
+            document.getElementById('screen-finish').classList.add('active');
+            
+            document.getElementById('victory-msg').innerText = `Parabéns, Mestre ${userData.name}!`;
+            document.getElementById('congrats-text').innerText = `Você completou todos os módulos de lógica em Python com sucesso e conquistou seu Troféu de Mestre!`;
+        }
+
+        // Reiniciar
+        function restartGame() {
+            currentModuleIndex = 0;
+            const medals = document.querySelectorAll('.medal');
+            medals.forEach(m => m.classList.remove('earned'));
+            
+            document.getElementById('screen-finish').classList.remove('active');
+            document.getElementById('screen-intro').classList.add('active');
+            document.getElementById('progressZone').style.display = 'none';
+        }
+
+        // Carregar nome se já existir
+        window.onload = () => {
+            const savedName = localStorage.getItem('pythonMasterName');
+            if (savedName) document.getElementById('userName').value = savedName;
+        };
+    </script>
+</body>
+</html>
